@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Clone & Build Docker') {
       steps {
-        git 'https://github.com/YOUR_USERNAME/fact-app-ci.git'
+        git 'https://github.com/SHADDY2001/fact-app-ci.git'
         sh 'docker build -t fact-app-ci .'
       }
     }
