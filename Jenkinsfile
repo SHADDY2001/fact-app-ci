@@ -1,16 +1,26 @@
 pipeline {
-  agent any
-  stages {
-    stage('Clone & Build Docker') {
-      steps {
-        git branch: 'main', url: 'https://github.com/SHADDY2001/fact-app-ci.git'
-        sh 'docker build -t fact-app-ci .'
-      }
+    agent any
+
+    stages {
+        stage('Clone') {
+            steps {
+                git 'https://github.com/SHADDY2001/fact-app-ci.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t shaddy100601/myapp .'
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
+                    sh 'docker push shaddy100601/myapp'
+                }
+            }
+        }
     }
-    stage('Run Container') {
-      steps {
-        sh 'docker run fact-app-ci'
-      }
-    }
-  }
 }
